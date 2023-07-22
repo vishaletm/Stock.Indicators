@@ -28,7 +28,7 @@ layout: page
 
 ### Installation and setup
 
-Find and install the [Skender.Stock.Indicators](https://www.nuget.org/packages/Skender.Stock.Indicators) NuGet package into your Project.  See [more help](https://www.google.com/search?q=install+nuget+package) for installing packages.
+Find and install the [Skender.Stock.Indicators](https://www.nuget.org/packages/Skender.Stock.Indicators) NuGet package into your Project.  See more [help for installing packages](https://www.google.com/search?q=install+nuget+package).
 
 ```powershell
 # dotnet CLI example
@@ -42,7 +42,7 @@ Install-Package Skender.Stock.Indicators
 
 Most indicators require that you provide historical quote data and additional configuration parameters.
 
-You must get historical quotes from your own market data provider.  For clarification, the `GetHistoryFromFeed()` method shown in the example below and throughout our documentation **is not part of this library**, but rather an example to represent your own acquisition of historical quotes.
+You must get historical quotes from your own market data provider.  For clarification, the `GetQuotesFromFeed()` method shown in the example below **is not part of this library**, but rather an example to represent your own acquisition of historical quotes.
 
 Historical price data can be provided as a `List`, `IEnumerable`, or `ICollection` of the `Quote` class ([see below](#historical-quotes)); however, it can also be supplied as a generic [custom TQuote type](#using-custom-quote-classes) if you prefer to use your own quote model.
 
@@ -58,7 +58,7 @@ using Skender.Stock.Indicators;
 [..]
 
 // fetch historical quotes from your feed (your method)
-IEnumerable<Quote> quotes = GetHistoryFromFeed("MSFT");
+IEnumerable<Quote> quotes = GetQuotesFromFeed("MSFT");
 
 // calculate 20-period SMA
 IEnumerable<SmaResult> results = quotes
@@ -86,7 +86,7 @@ See [individual indicator pages]({{site.baseurl}}/indicators/) for specific usag
 More examples available:
 
 - [Example usage code]({{site.baseurl}}/examples/#content) in a simple working console application
-- [Demo site](https://stock-charts.azurewebsites.net) (a stock chart)
+- [Demo site](https://charts.stockindicators.dev) (a stock chart)
 
 ## Historical quotes
 
@@ -109,7 +109,7 @@ There are many places to get financial market data.  Check with your brokerage o
 
 Each indicator will need different amounts of price `quotes` to calculate.  You can find guidance on the individual indicator documentation pages for minimum requirements; however, **most use cases will require that you provide more than the minimum**.  As a general rule of thumb, you will be safe if you provide 750 points of historical quote data (e.g. 3 years of daily data).
 
-> :warning: **IMPORTANT! Applying the _minimum_ amount of quote history as possible is NOT a good way to optimize your system.**  Some indicators use a smoothing technique that converges to better precision over time.  While you can calculate these with the minimum amount of quote data, the precision to two decimal points often requires 250 or more preceding historical records.
+> &#128681; **IMPORTANT! Applying the _minimum_ amount of quote history as possible is NOT a good way to optimize your system.**  Some indicators use a smoothing technique that converges to better precision over time.  While you can calculate these with the minimum amount of quote data, the precision to two decimal points often requires 250 or more preceding historical records.
 >
 > For example, if you are using daily data and want one year of precise EMA(250) data, you need to provide 3 years of historical quotes (1 extra year for the lookback period and 1 extra year for convergence); thereafter, you would discard or not use the first two years of results.  Occasionally, even more is required for optimal precision.
 >
@@ -141,7 +141,7 @@ public class MyCustomQuote : IQuote
 
 ```csharp
 // fetch historical quotes from your favorite feed
-IEnumerable<MyCustomQuote> myQuotes = GetHistoryFromFeed("MSFT");
+IEnumerable<MyCustomQuote> myQuotes = GetQuotesFromFeed("MSFT");
 
 // example: get 20-period simple moving average
 IEnumerable<SmaResult> results = myQuotes.GetSma(20);
@@ -189,7 +189,7 @@ public class MyEma : ResultBase
 public void MyClass(){
 
   // fetch historical quotes from your feed (your method)
-  IEnumerable<Quote> quotes = GetHistoryFromFeed("SPY");
+  IEnumerable<Quote> quotes = GetQuotesFromFeed("SPY");
 
   // compute indicator
   INumerable<EmaResult> emaResults = quotes.GetEma(14);
@@ -219,7 +219,7 @@ If you want to compute an indicator of indicators, such as an SMA of an ADX or a
 
 ```csharp
 // fetch historical quotes from your feed (your method)
-IEnumerable<Quote> quotes = GetHistoryFromFeed("SPY");
+IEnumerable<Quote> quotes = GetQuotesFromFeed("SPY");
 
 // calculate RSI of OBV
 IEnumerable<RsiResult> results

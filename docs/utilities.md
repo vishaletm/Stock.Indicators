@@ -41,9 +41,6 @@ var results = quotes
 `quotes.Aggregate(newSize)` is a tool to convert quotes to larger bar sizes.  For example if you have minute bar sizes in `quotes`, but want to convert it to hourly or daily.
 
 ```csharp
-// fetch historical quotes from your favorite feed
-IEnumerable<TQuote> minuteBarQuotes = GetHistoryFromFeed("MSFT");
-
 // aggregate into larger bars
 IEnumerable<Quote> dayBarQuotes =
   minuteBarQuotes.Aggregate(PeriodSize.Day);
@@ -52,7 +49,7 @@ IEnumerable<Quote> dayBarQuotes =
 An alternate version of this utility is provided where you can use any native `TimeSpan` value that is greater than `TimeSpan.Zero`.
 
 ```csharp
-// alternate usage
+// alternate usage with TimeSpan
 IEnumerable<Quote> dayBarQuotes =
   minuteBarQuotes.Aggregate(TimeSpan timeSpan);
 ```
@@ -72,7 +69,7 @@ IEnumerable<Quote> dayBarQuotes =
 - `PeriodSize.TwoMinutes`
 - `PeriodSize.OneMinute`
 
-> :warning: **Warning**: Partially populated period windows at the beginning, end, and market open/close points in `quotes` can be misleading when aggregated.  For example, if you are aggregating intraday minute bars into 15 minute bars and there is a single 4:00pm minute bar at the end, the resulting 4:00pm 15-minute bar will only have one minute of data in it whereas the previous 3:45pm bar will have all 15 minutes of bars aggregated (3:45-3:59pm).
+> &#128681; **Warning**: Partially populated period windows at the beginning, end, and market open/close points in `quotes` can be misleading when aggregated.  For example, if you are aggregating intraday minute bars into 15 minute bars and there is a single 4:00pm minute bar at the end, the resulting 4:00pm 15-minute bar will only have one minute of data in it whereas the previous 3:45pm bar will have all 15 minutes of bars aggregated (3:45-3:59pm).
 
 ### Extended candle properties
 
@@ -93,9 +90,6 @@ IEnumerable<CandleProperties> candles = quotes.ToCandles();
 `quotes.Validate()` is an advanced check of your `IEnumerable<TQuote> quotes`.  It will check for duplicate dates and other bad data and will throw an `InvalidQuotesException` if validation fails.  This comes at a small performance cost, so we did not automatically add these advanced checks in the indicator methods.  Of course, you can and should do your own validation of `quotes` prior to using it in this library.  Bad historical quotes can produce unexpected results.
 
 ```csharp
-// fetch historical quotes from your favorite feed
-IEnumerable<Quote> quotes = GetHistoryFromFeed("SPY");
-
 // advanced validation
 IEnumerable<Quote> validatedQuotes = quotes.Validate();
 
@@ -118,7 +112,7 @@ IEnumerable<CandleResult> results
   = quotes.GetMarubozu(..).Condense();
 ```
 
-> :warning: **Warning**: In all cases, `.Condense()` will remove non-essential results and will produce fewer records than are in `quotes`.
+> &#128681; **Warning**: In all cases, `.Condense()` will remove non-essential results and will produce fewer records than are in `quotes`.
 
 ### Find indicator result by date
 
@@ -150,9 +144,9 @@ IEnumerable<AdxResult> results =
 
 See [individual indicator pages]({{site.baseurl}}/indicators/#content) for information on recommended pruning quantities.
 
-> :information_source: **Note**: `.RemoveWarmupPeriods()` is not available on some indicators; however, you can still do a custom pruning by using the customizable `.RemoveWarmupPeriods(removePeriods)`.
+> &#128161; **Note**: `.RemoveWarmupPeriods()` is not available on some indicators; however, you can still do a custom pruning by using the customizable `.RemoveWarmupPeriods(removePeriods)`.
 >
-> :warning: **Warning**: without a specified `removePeriods` value, this utility will reverse-engineer the pruning amount.  When there are unusual results or when chaining multiple indicators, there will be an erroneous increase in the amount of pruning.  If you want more certainty, use a specific number for `removePeriods`.  Using this method on chained indicators without `removePeriods` is strongly discouraged.
+> &#128681; **Warning**: without a specified `removePeriods` value, this utility will reverse-engineer the pruning amount.  When there are unusual results or when chaining multiple indicators, there will be an erroneous increase in the amount of pruning.  If you want more certainty, use a specific number for `removePeriods`.  Using this method on chained indicators without `removePeriods` is strongly discouraged.
 
 ### Using tuple results
 
@@ -162,7 +156,7 @@ See [individual indicator pages]({{site.baseurl}}/indicators/#content) for infor
 
 `results.ToTupleChainable()` is a specialty converter used to prepare [custom indicators]({{site.baseurl}}/custom-indicators/#content) for chaining by removing `null` warmup periods and converting all remaining `null` values to `double.NaN`.
 
-> :warning: **Warning**: warmup periods are pruned when using `.ToTupleChainable()`, resulting in fewer records.
+> &#128681; **Warning**: warmup periods are pruned when using `.ToTupleChainable()`, resulting in fewer records.
 
 ### Sort results
 
@@ -176,8 +170,8 @@ This library also includes several tools that we use internally to calculate ind
 
 | method | example usage
 | -- |--
-| Slope | `double[] xValues = { 1, 2, 5, 4, 1 };`<br>`double[] yValues = { 4, 7, 8, 1, 1 };`<br>`double slope = Numerics.Slope(xValues, yValues);`
-| Standard deviation | `double[] values = { 1, 2, 3, 4, 5 };`<br>`double sd = values.StdDev();`
+| Slope | `double[] xValues = { 1, 2, 5, 4 };`<br>`double[] yValues = { 4, 7, 8, 1 };`<br>`double slope = Numerix.Slope(xValues, yValues);`
+| Standard deviation | `double[] values = { 1, 2, 3, 4 };`<br>`double sd = values.StdDev();`
 
 ### NullMath
 
